@@ -1,5 +1,40 @@
 import { sequelize } from "../models/init-models";
+// Quiz Selasa, 21 Juni 2022
+// Relation Database
+const jobsRightJoin = async (req, res) => {
+  try {
+    const country = await req.context.models.jobs.findAll({
+      include: [
+        {
+          model: req.context.models.employees,
+          as: "employees",
+          right: true,
+        },
+      ],
+    });
+    res.send(country);
+  } catch (error) {
+    console.log(error);
+    return res.status(404).send(error);
+  }
+};
 
+// Middleware Next
+const createJobs = async (req, res, next) => {
+  try {
+    const job = await req.context.models.jobs.create({
+      job_title: req.body.job_title,
+      min_salary: req.body.min_salary,
+      max_salary: req.body.max_salary,
+    });
+    req.job = job;
+    next();
+  } catch (error) {
+    return res.status(404).send(error);
+  }
+};
+
+// Quiz Jumat 17 Juni 2022
 const findAll = async (req, res) => {
   try {
     const job = await req.context.models.jobs.findAll();
@@ -74,4 +109,6 @@ export default {
   update,
   deleted,
   querySQL,
+  jobsRightJoin,
+  createJobs,
 };

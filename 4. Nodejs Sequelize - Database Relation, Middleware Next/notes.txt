@@ -1,0 +1,49 @@
+RELATIONAL DATABASE
+# Table locations
+Relasi: All
+Routes: /locations/all
+
+# Table countries
+Relasi: Left Join
+Routes: /countries/left-join
+
+# Table regions
+Relasi: Left Join
+Routes: /regions/left-join
+
+# Table departments
+Relasi: Right Join
+Routes: /departments/right-join
+
+# Table jobs
+Relasi: Right Join
+Routes: /jobs/right-join
+
+# Table employees with departments
+Relasi: Inner Join
+Routes: /employees/departments/inner-join
+
+# Table dependents
+Relasi: Inner Join
+Routes: /dependents/inner-join
+
+--------------------------------
+
+MIDDLEWARE NEXT
+# Table regions with countries
+Routes: /regions/next
+
+# Table countries with locations
+Routes: /countries/next
+
+# Table locations with departments
+Routes: /locations/next
+
+# Table departments with  employees
+Routes: /departments/next
+
+# Table jobs with employees
+Routes: /jobs/next
+
+# Table employees with dependents
+Routes: /employees/next

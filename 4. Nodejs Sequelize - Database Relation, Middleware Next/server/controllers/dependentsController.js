@@ -1,5 +1,42 @@
 import { sequelize } from "../models/init-models";
 
+// Quiz Selasa, 21 Juni 2022
+// Relation Database
+const dependentsInnerJoin = async (req, res) => {
+  try {
+    const dependent = await req.context.models.dependents.findAll({
+      include: [
+        {
+          model: req.context.models.employees,
+          as: "employee",
+          required: true,
+        },
+      ],
+    });
+    return res.send(dependent);
+  } catch (error) {
+    console.log(error);
+    res.status(404).send(error);
+  }
+};
+
+// Middleware Next
+const createNext = async (req, res) => {
+  try {
+    const employee = req.employee;
+    const dependent = await req.context.models.dependents.create({
+      employee_id: employee.employee_id,
+      first_name: req.body.first_name_depen,
+      last_name: req.body.last_name_depen,
+      relationship: req.body.relationship,
+    });
+    return res.send(dependent);
+  } catch (error) {
+    return res.status(404).send(error);
+  }
+};
+
+// Quiz Jumat 17 Juni 2022
 const findAll = async (req, res) => {
   try {
     const dependent = await req.context.models.dependents.findAll();
@@ -77,4 +114,6 @@ export default {
   update,
   deleted,
   querySQL,
+  dependentsInnerJoin,
+  createNext,
 };

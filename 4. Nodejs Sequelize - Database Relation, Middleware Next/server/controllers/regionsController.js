@@ -1,5 +1,41 @@
 import { sequelize } from "../models/init-models";
 
+// Quiz Selasa, 21 Juni 2022
+// Relation Database
+const regionsLeftJoin = async (req, res) => {
+  try {
+    const region = await req.context.models.regions.findAll({
+      include: [
+        {
+          model: req.context.models.countries,
+          as: "countries",
+          required: true
+        },
+      ],
+    });
+    return res.send(region);
+  } catch (error) {
+    console.log(error);
+    res.status(404).send(error);
+  }
+};
+
+// Middleware Next
+const createRegions = async (req, res, next) => {
+  try {
+    const region = await req.context.models.regions.create({
+      region_name : req.body.region_name 
+    });
+    req.region = region
+    next()
+  } catch (error) {
+    console.log(error);
+    return res.status(404).send(error);
+  }
+}
+
+
+// Quiz Jumat 17 Juni 2022
 const findAll = async (req, res) => {
   try {
     const region = await req.context.models.regions.findAll();
@@ -74,4 +110,6 @@ export default {
   update,
   deleted,
   querySQL,
+  regionsLeftJoin,
+  createRegions
 };
