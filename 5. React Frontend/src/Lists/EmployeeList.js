@@ -22,6 +22,19 @@ export default function EmployeeList() {
     )
   }
 
+  const PenguranganGaji = (id) => {
+    setEmployee(
+        [...employee.map(emp => {
+            if (id === emp.empId) {
+                emp.salary = emp.salary - 500
+                return emp
+            } else {
+                return emp
+            }
+        })]
+    )
+  }
+
   const RaiseSalary = (id) => {
     setEmployee(
         [...employee.map(emp => {
@@ -39,7 +52,7 @@ export default function EmployeeList() {
     setEmployee(
         [...employee.map(emp => {
             if (id === emp.empId) {
-                emp.salary = emp.salary - (emp.salary * 0.05)
+                emp.salary = (emp.salary - (emp.salary * 0.05)).toFixed(2)
                 return emp
             } else {
                 return emp
@@ -58,6 +71,7 @@ export default function EmployeeList() {
             <p>Full Name : {emp.fullName}</p>
             <p>Salary : {emp.salary}</p>
             <button onClick={() => PenambahanGaji(emp.empId)}>Penambahan Gaji</button>
+            <button onClick={() => PenguranganGaji(emp.empId)}>Pengurangan Gaji</button>
             <button onClick={() => RaiseSalary(emp.empId)}>Raise salary 10%</button>
             <button onClick={() => CutSalary(emp.empId)}>Cut salary 5%</button>
           </li>
