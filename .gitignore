@@ -1,0 +1,23 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+6. React Request API/node_modules
+6. React Request API/.pnp
+6. React Request API/.pnp.js
+
+# testing
+6. React Request API/coverage
+
+# production
+6. React Request API/build
+
+# misc
+6. React Request API/.DS_Store
+6. React Request API/.env.local
+6. React Request API/.env.development.local
+6. React Request API/.env.test.local
+6. React Request API/.env.production.local
+
+6. React Request API/npm-debug.log*
+6. React Request API/yarn-debug.log*
+6. React Request API/yarn-error.log*
