@@ -1,47 +1,100 @@
 import React, { useState, useEffect } from "react";
 import api from "../Api/indexApi";
-import ShowData from "./ShowData";
+import JobsShow from "./Show/JobsShow";
+import JobsAdd from "./Add/JobsAdd";
 
 export default function JobsView() {
-  const title = "List Jobs";
+  const title = "Jobs";
   const [jobs, setJobs] = useState([]);
-  const [display, setDisplay] = useState(false);
+  const [display, setDisplay] = useState("");
+  const [refresh, setRefresh] = useState(false);
+  const [values, setValues] = useState({
+    job_title: "",
+    min_salary: "",
+    max_salary: "",
+  });
 
   useEffect(() => {
     api.jobsApi.findAll().then((data) => {
       setJobs(data);
     });
-  }, []);
+    setRefresh(false);
+  }, [refresh]);
 
-  const renderTable = () => {
+  const handleOnChange = (name) => (event) => {
+    setValues({ ...values, [name]: event.target.value });
+  };
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+
+    const payload = {
+      job_title: values.job_title,
+      min_salary: values.min_salary || null,
+      max_salary: values.max_salary || null,
+    };
+
+    await api.jobsApi
+      .create(payload)
+      .then(() => {
+        setDisplay("show");
+        setRefresh(true);
+        window.alert(`Successfully Add Job ${values.job_title}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const onDelete = async (id, name) => {
+    await api.jobsApi
+      .deleted(id)
+      .then(() => {
+        setDisplay("show");
+        setRefresh(true);
+        window.alert(`Successfully Delete Job ${name}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const show = () => {
     return (
-      <table>
-        <th>Job ID</th>
-        <th>Job Title</th>
-        <th>Min Salary</th>
-        <th>Max Salary</th>
-        <tbody>
-          {jobs &&
-            jobs.map((job) => (
-              <tr key={job.job_id}>
-                <td>{job.job_id}</td>
-                <td>{job.job_title}</td>
-                <td>{job.min_salary}</td>
-                <td>{job.max_salary}</td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+      <div>
+        <JobsShow Jobs={jobs} onDelete={onDelete} />
+      </div>
     );
   };
+
+  const add = () => {
+    return (
+      <div>
+        <JobsAdd
+          onSubmit={onSubmit}
+          handleOnChange={handleOnChange}
+          setDisplay={setDisplay}
+        />
+      </div>
+    );
+  };
+
   return (
     <div>
-      <ShowData
-      Title = {title}
-      Display = {display}
-      setDisplay = {setDisplay}
-      renderTable = {renderTable}
-      />
+      <h1>{title}</h1>
+      <button
+        onClick={() =>
+          display === "show" ? setDisplay("") : setDisplay("show")
+        }
+      >
+        {display === "show" ? "Hide" : "Show"}
+      </button>
+      <button
+        onClick={() => (display === "add" ? setDisplay("") : setDisplay("add"))}
+      >
+        {display === "add" ? "Close" : "Add Job"}
+      </button>
+      {display === "show" ? show() : display === "add" ? add() : <></>}
     </div>
   );
 }

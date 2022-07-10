@@ -2,7 +2,7 @@ import React from "react";
 
 import RegionView from "./RegionView";
 import CountriesView from "./CountriesView";
-import DepartmentsView from "./DepartmentsApi";
+import DepartmentsView from "./DepartmentsView";
 import DependentsView from "./DependentsView";
 import EmployeesView from "./EmployeesView";
 import JobsView from "./JobsView";
@@ -17,9 +17,9 @@ export default function IndexView() {
       <CountriesView />
       <DepartmentsView />
       <DependentsView />
-      <EmployeesView />
       <JobsView />
       <LocationsView />
+      <EmployeesView />
       <ProjectsView />
       <ProjectAssignmentView />
     </div>

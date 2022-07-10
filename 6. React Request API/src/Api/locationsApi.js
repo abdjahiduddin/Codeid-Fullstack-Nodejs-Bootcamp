@@ -10,6 +10,26 @@ const findAll = async () => {
   }
 };
 
+const create = async (payload) => {
+  try {
+    const result = await axios.post(`${config.domain}/locations/`, payload);
+    return result;
+  } catch (error) {
+    return await error;
+  }
+};
+
+const deleted = async (id) => {
+  try {
+    const result = await axios.delete(`${config.domain}/locations/${id}`);
+    return result;
+  } catch (error) {
+    return await error.message;
+  }
+};
+
 export default {
   findAll,
+  create,
+  deleted,
 };

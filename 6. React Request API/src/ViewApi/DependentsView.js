@@ -1,50 +1,106 @@
 import React, { useEffect, useState } from "react";
 import api from "../Api/indexApi";
-import ShowData from "./ShowData";
+import DependentsShow from "./Show/DependentsShow";
+import DependentsAdd from "./Add/DependentsAdd";
 
 export default function DependentsView() {
-  const title = "List Dependents";
+  const title = "Dependents";
   const [dependents, setDependents] = useState([]);
-  const [display, setDisplay] = useState(false);
+  const [display, setDisplay] = useState("");
+  const [refresh, setRefresh] = useState(false);
+  const [values, setValues] = useState({
+    first_name: "",
+    last_name: "",
+    relationship: "",
+    employee_id: "",
+  });
 
   useEffect(() => {
     api.dependentsApi.findAll().then((data) => {
       setDependents(data);
     });
-  }, []);
+    setRefresh(false);
+  }, [refresh]);
 
-  const renderTable = () => {
+  const handleOnChange = (name) => (event) => {
+    setValues({ ...values, [name]: event.target.value });
+  }
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+
+    const payload = {
+      first_name: values.first_name,
+      last_name: values.last_name,
+      relationship: values.relationship,
+      employee_id: values.employee_id || null,
+    };
+
+    await api.dependentsApi
+      .create(payload)
+      .then(() => {
+        setDisplay("show");
+        setRefresh(true);
+        window.alert(
+          `Successfully Add Dependent ${
+            values.first_name + " " + values.last_name
+          }`
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const onDelete = async (id, name) => {
+    await api.dependentsApi
+      .deleted(id)
+      .then(() => {
+        setDisplay("show");
+        setRefresh(true);
+        window.alert(`Successfully Delete Dependent ${name}`)
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const show = () => {
     return (
-      <table>
-        <th>Dependent ID</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Epmployee ID</th>
-        <th>Relationship</th>
-        <tbody>
-          {dependents &&
-            dependents.map((dependent) => (
-              <tr key={dependent.dependent_id}>
-                <td>{dependent.dependent_id}</td>
-                <td>{dependent.first_name}</td>
-                <td>{dependent.last_name}</td>
-                <td>{dependent.employee_id}</td>
-                <td>{dependent.relationship}</td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+      <div>
+        <DependentsShow Dependents={dependents} onDelete={onDelete} />
+      </div>
     );
+  };
+
+  const add = () => {
+    return (
+      <div>
+        <DependentsAdd
+        onSubmit={onSubmit}
+        handleOnChange={handleOnChange}
+        setDisplay={setDisplay}
+        />
+      </div>
+    )
   };
 
   return (
     <div>
-      <ShowData
-        Title={title}
-        Display={display}
-        setDisplay={setDisplay}
-        renderTable={renderTable}
-      />
+      <h1>{title}</h1>
+      <button
+        onClick={() =>
+          display === "show" ? setDisplay("") : setDisplay("show")
+        }
+      >
+        {display === "show" ? "Hide" : "Show"}
+      </button>
+      <button
+        onClick={() => (display === "add" ? setDisplay("") : setDisplay("add"))}
+      >
+        {display === "add" ? "Close" : "Add Dependent"}
+      </button>
+      {display === "show" ? show() : display === "add" ? add() : <></>}
     </div>
   );
 }

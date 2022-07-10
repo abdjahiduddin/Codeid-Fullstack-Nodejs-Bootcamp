@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import api from "../Api/indexApi";
-import ShowData from "./ShowData";
+import EmployeesShow from "./Show/EmployeesShow";
 
 export default function EmployeesView() {
-  const title = "List Employees";
+  const title = "Employees";
   const [employees, setEmployees] = useState([]);
   const [display, setDisplay] = useState(false);
 
@@ -13,47 +13,40 @@ export default function EmployeesView() {
     });
   }, []);
 
-  const renderTable = () => {
+  const onDelete = async (id) => {
+    console.log("OnDelete Clicked");
+  };
+
+  const show = () => {
     return (
-      <table>
-        <th>Employee ID</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Email</th>
-        <th>Phone Number</th>
-        <th>Hire Date</th>
-        <th>Salary</th>
-        <th>Manager ID</th>
-        <th>Job ID</th>
-        <th>Department ID</th>
-        <tbody>
-          {employees &&
-            employees.map((employee) => (
-              <tr key={employee.employee_id}>
-                <td>{employee.employee_id}</td>
-                <td>{employee.first_name}</td>
-                <td>{employee.last_name}</td>
-                <td>{employee.email}</td>
-                <td>{employee.phone_number}</td>
-                <td>{employee.hire_date}</td>
-                <td>{employee.salary}</td>
-                <td>{employee.manager_id}</td>
-                <td>{employee.job_id}</td>
-                <td>{employee.department_id}</td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+      <div>
+        <EmployeesShow 
+          Employees={employees}
+          onDelete={onDelete} />
+      </div>
     );
   };
+
+  const add = () => {
+    return <div>{/* <RegionAdd Title={title} /> */}</div>;
+  };
+
   return (
     <div>
-      <ShowData
-        Title={title}
-        Display={display}
-        setDisplay={setDisplay}
-        renderTable={renderTable}
-      />
+      <h1>{title}</h1>
+      <button
+        onClick={() =>
+          display === "show" ? setDisplay("") : setDisplay("show")
+        }
+      >
+        {display === "show" ? "Hide" : "Show"}
+      </button>
+      <button
+        onClick={() => (display === "add" ? setDisplay("") : setDisplay("add"))}
+      >
+        {display === "add" ? "Close" : "Add Employee"}
+      </button>
+      {display === "show" ? show() : display === "add" ? add() : <></>}
     </div>
   );
 }

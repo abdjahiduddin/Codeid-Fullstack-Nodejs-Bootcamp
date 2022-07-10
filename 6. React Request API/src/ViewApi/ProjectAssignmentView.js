@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import api from "../Api/indexApi";
-import ShowData from "./ShowData";
+import ProjectAssigmentShow from "./Show/ProjectAssigmentShow";
 
 export default function ProjectAssignmentView() {
-  const title = "List Project Assignments";
+  const title = "Project Assignments";
   const [projectAssignment, setProjectAssignment] = useState([]);
   const [display, setDisplay] = useState(false);
 
@@ -13,37 +13,41 @@ export default function ProjectAssignmentView() {
     });
   }, []);
 
-  const renderTable = () => {
+  const onDelete = async (id) => {
+    console.log("OnDelete Clicked");
+  };
+
+  const show = () => {
     return (
-      <table>
-        <th>Project Assignment ID</th>
-        <th>Project Employee ID</th>
-        <th>Project Start Date</th>
-        <th>Project End Date</th>
-        <th>Project Status</th>
-        <tbody>
-          {projectAssignment &&
-            projectAssignment.map((pa) => (
-              <tr key={pa.pras_proj_id}>
-                <td>{pa.pras_proj_id}</td>
-                <td>{pa.pras_employee_id}</td>
-                <td>{pa.pras_startdate}</td>
-                <td>{pa.pras_enddate}</td>
-                <td>{pa.pras_status}</td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+      <div>
+        <ProjectAssigmentShow
+          ProjectAssignment={projectAssignment}
+          onDelete={onDelete}
+        />
+      </div>
     );
   };
+
+  const add = () => {
+    return <div>{/* <RegionAdd Title={title} /> */}</div>;
+  };
+  
   return (
     <div>
-      <ShowData
-        Title={title}
-        Display={display}
-        setDisplay={setDisplay}
-        renderTable={renderTable}
-      />
+      <h1>{title}</h1>
+      <button
+        onClick={() =>
+          display === "show" ? setDisplay("") : setDisplay("show")
+        }
+      >
+        {display === "show" ? "Hide" : "Show"}
+      </button>
+      <button
+        onClick={() => (display === "add" ? setDisplay("") : setDisplay("add"))}
+      >
+        {display === "add" ? "Close" : "Add Project Assignment"}
+      </button>
+      {display === "show" ? show() : display === "add" ? add() : <></>}
     </div>
   );
 }

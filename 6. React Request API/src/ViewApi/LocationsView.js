@@ -1,52 +1,104 @@
 import React, { useState, useEffect } from "react";
 import api from "../Api/indexApi";
-import ShowData from "./ShowData";
+import LocationsShow from "./Show/LocationsShow";
+import LocationsAdd from "./Add/LocationsAdd";
 
 export default function LocationsView() {
-  const title = "List Locations";
+  const title = "Locations";
   const [locations, setLocations] = useState([]);
-  const [display, setDisplay] = useState(false);
+  const [display, setDisplay] = useState("");
+  const [refresh, setRefresh] = useState(false);
+  const [values, setValues] = useState({
+    street_address: "",
+    postal_code: "",
+    city: "",
+    state_province: "",
+    country_id: "",
+  });
 
   useEffect(() => {
     api.locationsApi.findAll().then((data) => {
       setLocations(data);
     });
-  }, []);
+    setRefresh(false);
+  }, [refresh]);
 
-  const renderTable = () => {
+  const handleOnChange = (name) => (event) => {
+    setValues({ ...values, [name]: event.target.value });
+  };
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+
+    const payload = {
+      street_address: values.street_address,
+      postal_code: values.postal_code,
+      city: values.city,
+      state_province: values.state_province,
+      country_id: values.country_id,
+    };
+
+    await api.locationsApi
+      .create(payload)
+      .then(() => {
+        setDisplay("show");
+        setRefresh(true);
+        window.alert(`Successfully Add New Location`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const onDelete = async (id) => {
+    await api.locationsApi
+      .deleted(id)
+      .then(() => {
+        setDisplay("show");
+        setRefresh(true);
+        window.alert(`Successfully Delete Location ${id}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const show = () => {
     return (
-      <table>
-        <th>Location ID</th>
-        <th>Street Address</th>
-        <th>Postal Code</th>
-        <th>City</th>
-        <th>State Province</th>
-        <th>Country ID</th>
-        <tbody>
-          {locations &&
-            locations.map((location) => (
-              <tr key={location.location_id}>
-                <td>{location.location_id}</td>
-                <td>{location.street_address}</td>
-                <td>{location.postal_code}</td>
-                <td>{location.city}</td>
-                <td>{location.state_province}</td>
-                <td>{location.country_id}</td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+      <div>
+        <LocationsShow Locations={locations} onDelete={onDelete} />
+      </div>
+    );
+  };
+
+  const add = () => {
+    return (
+      <div>
+        <LocationsAdd
+          onSubmit={onSubmit}
+          handleOnChange={handleOnChange}
+          setDisplay={setDisplay}
+        />
+      </div>
     );
   };
 
   return (
     <div>
-      <ShowData
-        Title={title}
-        Display={display}
-        setDisplay={setDisplay}
-        renderTable={renderTable}
-      />
+      <h1>{title}</h1>
+      <button
+        onClick={() =>
+          display === "show" ? setDisplay("") : setDisplay("show")
+        }
+      >
+        {display === "show" ? "Hide" : "Show"}
+      </button>
+      <button
+        onClick={() => (display === "add" ? setDisplay("") : setDisplay("add"))}
+      >
+        {display === "add" ? "Close" : "Add Location"}
+      </button>
+      {display === "show" ? show() : display === "add" ? add() : <></>}
     </div>
   );
 }
