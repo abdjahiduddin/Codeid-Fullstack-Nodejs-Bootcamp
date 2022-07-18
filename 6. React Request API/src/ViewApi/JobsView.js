@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import api from "../Api/indexApi";
 import JobsShow from "./Show/JobsShow";
 import JobsAdd from "./Add/JobsAdd";
+import JobsEdit from "./Edit/JobsEdit";
 
 export default function JobsView() {
   const title = "Jobs";
   const [jobs, setJobs] = useState([]);
   const [display, setDisplay] = useState("");
   const [refresh, setRefresh] = useState(false);
+  const [id, setId] = useState();
   const [values, setValues] = useState({
     job_title: "",
     min_salary: "",
@@ -59,10 +61,15 @@ export default function JobsView() {
       });
   };
 
+  const onEdit = (regId) => {
+    setDisplay("edit");
+    setId(regId);
+  };
+
   const show = () => {
     return (
       <div>
-        <JobsShow Jobs={jobs} onDelete={onDelete} />
+        <JobsShow Jobs={jobs} onDelete={onDelete} onEdit={onEdit} />
       </div>
     );
   };
@@ -73,6 +80,19 @@ export default function JobsView() {
         <JobsAdd
           onSubmit={onSubmit}
           handleOnChange={handleOnChange}
+          setDisplay={setDisplay}
+        />
+      </div>
+    );
+  };
+
+  const edit = () => {
+    return (
+      <div>
+        <JobsEdit
+          closeAdd={() => setDisplay("show")}
+          onRefresh={() => setRefresh(true)}
+          id={id}
           setDisplay={setDisplay}
         />
       </div>
@@ -94,7 +114,15 @@ export default function JobsView() {
       >
         {display === "add" ? "Close" : "Add Job"}
       </button>
-      {display === "show" ? show() : display === "add" ? add() : <></>}
+      {display === "edit" ? (
+        edit()
+      ) : display === "show" ? (
+        show()
+      ) : display === "add" ? (
+        add()
+      ) : (
+        <></>
+      )}
     </div>
   );
 }

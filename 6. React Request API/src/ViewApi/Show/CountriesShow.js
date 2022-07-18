@@ -25,6 +25,7 @@ export default function CountriesShow(props) {
                     {" "}
                     Delete
                   </button>
+                  <button onClick={()=> (props.onEdit(country.country_id)) }> Edit </button>
                 </td>
               </tr>
             ))}

@@ -28,8 +28,27 @@ const deleted = async (id) => {
   }
 };
 
+const findOne = async (id) => {
+  try {
+    const result = await axios.get(`${config.domain}/regions/${id}`);
+    return result.data;
+  } catch (error) {
+    return error;
+  }
+};
+
+const update = async (data) => {
+  const id = data.region_id
+  try {
+    const result = await axios.put(`${config.domain}/regions/${id}`, data);
+    return result.data;
+  } catch (error) {}
+};
+
 export default {
   findAll,
   create,
   deleted,
+  findOne,
+  update,
 };

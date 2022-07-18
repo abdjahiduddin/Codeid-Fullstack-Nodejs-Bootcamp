@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import api from "../Api/indexApi";
 import RegionShow from "./Show/RegionsShow";
 import RegionAdd from "./Add/RegionsAdd";
+import RegionsEdit from "./Edit/RegionsEdit";
 
 export default function RegionView() {
   const title = "Region";
   const [regions, setRegions] = useState([]);
   const [display, setDisplay] = useState("");
   const [refresh, setRefresh] = useState(false);
+  const [id, setId] = useState();
   const [values, setValues] = useState({
     region_id: undefined,
     region_name: "",
@@ -55,10 +57,15 @@ export default function RegionView() {
       });
   };
 
+  const onEdit = (regId) => {
+    setDisplay("edit");
+    setId(regId);
+  };
+
   const show = () => {
     return (
       <div>
-        <RegionShow Regions={regions} onDelete={onDelete} />
+        <RegionShow Regions={regions} onDelete={onDelete} onEdit={onEdit} />
       </div>
     );
   };
@@ -69,6 +76,19 @@ export default function RegionView() {
         <RegionAdd
           onSubmit={onSubmit}
           handleOnChange={handleOnChange}
+          setDisplay={setDisplay}
+        />
+      </div>
+    );
+  };
+
+  const edit = () => {
+    return (
+      <div>
+        <RegionsEdit
+          closeAdd={() => setDisplay("show")}
+          onRefresh={() => setRefresh(true)}
+          id={id}
           setDisplay={setDisplay}
         />
       </div>
@@ -90,7 +110,15 @@ export default function RegionView() {
       >
         {display === "add" ? "Close" : "Add Region"}
       </button>
-      {display === "show" ? show() : display === "add" ? add() : <></>}
+      {display === "edit" ? (
+        edit()
+      ) : display === "show" ? (
+        show()
+      ) : display === "add" ? (
+        add()
+      ) : (
+        <></>
+      )}
     </div>
   );
 }

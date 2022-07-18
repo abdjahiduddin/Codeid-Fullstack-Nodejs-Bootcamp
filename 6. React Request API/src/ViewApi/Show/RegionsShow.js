@@ -19,10 +19,11 @@ export default function RegionShow(props) {
                 <td>{reg.region_id}</td>
                 <td>{reg.region_name}</td>
                 <td>
-                  <button onClick={() => props.onDelete(reg.region_id, reg.region_name)}>
+                  <button onClick={() => (props.onDelete(reg.region_id, reg.region_name))}>
                     {" "}
                     Delete
                   </button>
+                  <button onClick={()=> (props.onEdit(reg.region_id)) }> Edit </button>
                 </td>
               </tr>
             ))}

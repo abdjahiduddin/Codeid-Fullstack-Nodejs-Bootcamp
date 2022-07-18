@@ -25,7 +25,7 @@ export default function ProjectAssigmentShow(props) {
                 <td>{pa.pras_enddate}</td>
                 <td>{pa.pras_status}</td>
                 <td>
-                  <button onClick={() => props.onDelete(pa.pras_proj_id)}>
+                  <button onClick={() => props.onDelete(pa.pras_proj_id, pa.pras_employee_id)}>
                     {" "}
                     Delete
                   </button>

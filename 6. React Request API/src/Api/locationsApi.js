@@ -11,6 +11,7 @@ const findAll = async () => {
 };
 
 const create = async (payload) => {
+  console.log(payload);
   try {
     const result = await axios.post(`${config.domain}/locations/`, payload);
     return result;
@@ -28,8 +29,29 @@ const deleted = async (id) => {
   }
 };
 
+const findOne = async (id) => {
+  try {
+    const result = await axios.get(`${config.domain}/locations/${id}`);
+    return result.data;
+  } catch (error) {
+    return error;
+  }
+};
+
+const update = async (data) => {
+  const id = data.location_id;
+  try {
+    const result = await axios.put(`${config.domain}/locations/${id}`, data);
+    return result.data;
+  } catch (error) {
+    return error;
+  }
+};
+
 export default {
   findAll,
   create,
   deleted,
+  findOne,
+  update,
 };

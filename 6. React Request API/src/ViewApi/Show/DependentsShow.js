@@ -36,6 +36,7 @@ export default function DependentsShow(props) {
                     {" "}
                     Delete
                   </button>
+                  <button onClick={()=> (props.onEdit(dependent.dependent_id)) }> Edit </button>
                 </td>
               </tr>
             ))}

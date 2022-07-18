@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import api from "../Api/indexApi";
 import DependentsShow from "./Show/DependentsShow";
 import DependentsAdd from "./Add/DependentsAdd";
+import DependentsEdit from "./Edit/DependentsEdit";
 
 export default function DependentsView() {
   const title = "Dependents";
   const [dependents, setDependents] = useState([]);
   const [display, setDisplay] = useState("");
+  const [id, setId] = useState();
   const [refresh, setRefresh] = useState(false);
   const [values, setValues] = useState({
     first_name: "",
@@ -24,7 +26,7 @@ export default function DependentsView() {
 
   const handleOnChange = (name) => (event) => {
     setValues({ ...values, [name]: event.target.value });
-  }
+  };
 
   const onSubmit = async (event) => {
     event.preventDefault();
@@ -58,17 +60,26 @@ export default function DependentsView() {
       .then(() => {
         setDisplay("show");
         setRefresh(true);
-        window.alert(`Successfully Delete Dependent ${name}`)
+        window.alert(`Successfully Delete Dependent ${name}`);
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
+  const onEdit = (regId) => {
+    setDisplay("edit");
+    setId(regId);
+  };
+
   const show = () => {
     return (
       <div>
-        <DependentsShow Dependents={dependents} onDelete={onDelete} />
+        <DependentsShow
+          Dependents={dependents}
+          onDelete={onDelete}
+          onEdit={onEdit}
+        />
       </div>
     );
   };
@@ -77,12 +88,25 @@ export default function DependentsView() {
     return (
       <div>
         <DependentsAdd
-        onSubmit={onSubmit}
-        handleOnChange={handleOnChange}
-        setDisplay={setDisplay}
+          onSubmit={onSubmit}
+          handleOnChange={handleOnChange}
+          setDisplay={setDisplay}
         />
       </div>
-    )
+    );
+  };
+
+  const edit = () => {
+    return (
+      <div>
+        <DependentsEdit
+          closeAdd={() => setDisplay("show")}
+          onRefresh={() => setRefresh(true)}
+          id={id}
+          setDisplay={setDisplay}
+        />
+      </div>
+    );
   };
 
   return (
@@ -100,7 +124,15 @@ export default function DependentsView() {
       >
         {display === "add" ? "Close" : "Add Dependent"}
       </button>
-      {display === "show" ? show() : display === "add" ? add() : <></>}
+      {display === "edit" ? (
+        edit()
+      ) : display === "show" ? (
+        show()
+      ) : display === "add" ? (
+        add()
+      ) : (
+        <></>
+      )}
     </div>
   );
 }

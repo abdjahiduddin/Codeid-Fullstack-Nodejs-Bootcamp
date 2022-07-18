@@ -29,6 +29,7 @@ export default function JobsShow(props) {
                     {" "}
                     Delete
                   </button>
+                  <button onClick={()=> (props.onEdit(job.job_id)) }> Edit </button>
                 </td>
               </tr>
             ))}

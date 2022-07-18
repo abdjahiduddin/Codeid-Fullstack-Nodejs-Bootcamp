@@ -32,6 +32,7 @@ export default function LocationsShow(props) {
                     {" "}
                     Delete
                   </button>
+                  <button onClick={()=> (props.onEdit(location.location_id)) }> Edit </button>
                 </td>
               </tr>
             ))}

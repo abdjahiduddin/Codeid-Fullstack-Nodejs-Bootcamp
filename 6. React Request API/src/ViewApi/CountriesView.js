@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import api from "../Api/indexApi";
 import CountriesShow from "./Show/CountriesShow";
 import CountriesAdd from "./Add/CountriesAdd";
+import CountriesEdit from "./Edit/CountriesEdit";
 
 export default function CountriesView() {
   const title = "Countries";
   const [countries, setCountries] = useState([]);
   const [display, setDisplay] = useState("");
   const [refresh, setRefresh] = useState(false);
+  const [id, setId] = useState();
   const [values, setValues] = useState({
     country_id: "",
     country_name: "",
@@ -27,7 +29,7 @@ export default function CountriesView() {
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    
+
     const payload = {
       country_id: values.country_id,
       country_name: values.country_name,
@@ -59,10 +61,19 @@ export default function CountriesView() {
       });
   };
 
+  const onEdit = (id) => {
+    setDisplay("edit");
+    setId(id);
+  };
+
   const show = () => {
     return (
       <div>
-        <CountriesShow Countries={countries} onDelete={onDelete} />
+        <CountriesShow
+          Countries={countries}
+          onDelete={onDelete}
+          onEdit={onEdit}
+        />
       </div>
     );
   };
@@ -73,6 +84,19 @@ export default function CountriesView() {
         <CountriesAdd
           onSubmit={onSubmit}
           handleOnChange={handleOnChange}
+          setDisplay={setDisplay}
+        />
+      </div>
+    );
+  };
+
+  const edit = () => {
+    return (
+      <div>
+        <CountriesEdit
+          closeAdd={() => setDisplay("show")}
+          onRefresh={() => setRefresh(true)}
+          id={id}
           setDisplay={setDisplay}
         />
       </div>
@@ -94,7 +118,15 @@ export default function CountriesView() {
       >
         {display === "add" ? "Close" : "Add Country"}
       </button>
-      {display === "show" ? show() : display === "add" ? add() : <></>}
+      {display === "edit" ? (
+        edit()
+      ) : display === "show" ? (
+        show()
+      ) : display === "add" ? (
+        add()
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
